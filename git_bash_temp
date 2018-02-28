@@ -1,0 +1,26 @@
+function parse_git_dirty {
+  [[ $(git status 2> /dev/null | tail -n1) != "nothing to commit (working directory clean)" ]] && echo "*"
+}
+
+function parse_git_branch {
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e "s/* \(.*\)/[\1$(parse_git_dirty)]/"
+}
+
+alias ll="ls -lartGh"
+alias c=clear
+
+RED="\[\033[0;31m\]"
+YELLOW="\[\033[0;33m\]"
+GREEN="\[\033[0;32m\]"
+
+export PS1='\[\033[0;35m\]\w\[\033[0;33m\]$(parse_git_branch)\[\033[00m\]$ : '
+
+# git aliases
+git config --global color.diff auto
+git config --global color.status auto
+git config --global color.interactive auto
+git config --global color.branch auto
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.ci commit
+git config --global alias.br branch
